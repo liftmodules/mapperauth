@@ -65,6 +65,16 @@ trait AuthUserMeta[UserType <: AuthUser] {
   def hasPermission(permission: APermission): Boolean
   def lacksPermission(permission: APermission): Boolean = !hasPermission(permission)
 
+  def hasRole(user: UserType, role: String): Boolean
+  def lacksRole(user: UserType, role: String): Boolean = !hasRole(user, role)
+  def hasAnyRoles(user: UserType, roles: Seq[String]) = roles exists (r => hasRole(user, r.trim))
+
+  /*
+   * Current user has the given permission
+   */
+  def hasPermission(user: UserType, permission: APermission): Boolean
+  def lacksPermission(user: UserType, permission: APermission): Boolean = !hasPermission(user, permission)
+
   /*
    * Log the current user out
    */
@@ -106,15 +116,13 @@ trait UserLifeCycle[UserType <: AuthUser] {
   def isLoggedIn: Boolean = currentUserId.isDefined
   def isAuthenticated: Boolean = curUserIsAuthenticated.is
 
-  def hasRole(role: String): Boolean = currentUser
-    .map(_.authRoles.exists(_ == role))
-    .openOr(false)
+  def hasRole(role: String): Boolean = currentUser.map(u => hasRole(u, role)).openOr(false)
 
-  def hasPermission(permission: APermission): Boolean = {
-    currentUser
-      .map(u => permission.implies(u.authPermissions))
-      .openOr(false)
-  }
+  def hasPermission(permission: APermission): Boolean = currentUser.map(u => hasPermission(u, permission)).openOr(false)
+
+  def hasRole(user: UserType, role: String): Boolean = user.authRoles.exists(_ == role)
+
+  def hasPermission(user: UserType, permission: APermission): Boolean = permission.implies(user.authPermissions)
 
   def logUserIn(who: UserType, isAuthed: Boolean = false, isRemember: Boolean = false) {
     curUserId.remove()
@@ -215,8 +223,11 @@ trait ProtoAuthUser[T <: ProtoAuthUser[T]] extends MapperAuthUser[T] {
 //  lazy val authPermissions: Set[Permission] = (permissions.is ::: roles.permissions).toSet
 //  lazy val authRoles: Set[String] = roles.names.toSet
 
+  /**
+   * Using a lazy val means the user has to be reloaded if the attached roles or permissions change.
+   */
   lazy val authPermissions: Set[APermission] = (Permission.userPermissions(id.is) ::: userRoles.permissions).toSet
-//  lazy val authRoles: Set[String] = userRoles.names.toSet
+  lazy val authRoles: Set[String] = userRoles.names.toSet
 
   lazy val fancyEmail = AuthUtil.fancyEmail(username.is, email.is)
 }

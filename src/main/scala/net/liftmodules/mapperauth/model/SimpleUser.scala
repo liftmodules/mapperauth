@@ -31,8 +31,6 @@ class SimpleUser private () extends ProtoAuthUser[SimpleUser] {
 
   override def userIdAsString: String = id.toString
 
-  def authRoles: Set[String] =  userRoles.names.toSet
-
 }
 
 object SimpleUser extends SimpleUser with ProtoAuthUserMeta[SimpleUser] with Loggable {
