@@ -12,7 +12,7 @@ import net.liftweb.mapper.MappedString
 
 
 /*
- * Simple record for storing permissions. Permission name is the PK.
+ * Simple record for storing permissions.
  */
 object Permission extends Permission with LongKeyedMetaMapper[Permission]  {
 
