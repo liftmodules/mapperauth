@@ -1,0 +1,134 @@
+/**
+  * Copyright 2011 Tim Nelson
+  *
+  * Licensed under the Apache License, Version 2.0 (the "License");
+  * you may not use this file except in compliance with the License.
+  * You may obtain a copy of the License at
+  *
+  *     http://www.apache.org/licenses/LICENSE-2.0
+  *
+  * Unless required by applicable law or agreed to in writing, software
+  * distributed under the License is distributed on an "AS IS" BASIS,
+  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  * See the License for the specific language governing permissions and
+  * limitations under the License.
+  */
+
+package net.liftmodules.mapperauth
+
+import org.joda.time.Days
+import org.joda.time.Hours
+import org.joda.time.ReadablePeriod
+import net.liftweb._
+import net.liftweb.common._
+import net.liftweb.http.Factory
+import net.liftweb.http.LiftRules
+import net.liftweb.http.SessionVar
+import net.liftweb.util.Helpers
+import net.liftweb.util.BundleBuilder
+
+object MapperAuth extends Factory {
+
+
+  //set default resource bundle
+  LiftRules.resourceBundleFactories.prepend( {
+    case (_,locale) if LiftRules.loadResourceAsXml("/toserve/mongoauth.resources.html").isDefined =>
+      LiftRules
+        .loadResourceAsXml("/toserve/mongoauth.resources.html")
+        .flatMap { BundleBuilder.convert(_,locale) }
+        .openOrThrowException("isDefined is called in the guard")
+  })
+
+  // AuthUserMeta object
+  val authUserMeta = new FactoryMaker[ProtoAuthUserMeta[_]](model.SimpleUser) {}
+
+  // urls
+  val indexUrl = new FactoryMaker[String]("/") {}
+  val loginUrl = new FactoryMaker[String]("/login") {}
+  val logoutUrl = new FactoryMaker[String]("/logout") {}
+  val registerUrl = new FactoryMaker[String]("/register") {}
+
+  // site settings
+  val siteName = new FactoryMaker[String]("Example") {}
+  val systemEmail = new FactoryMaker[String]("info@example.com") {}
+  val systemUsername = new FactoryMaker[String]("Example Staff") {}
+
+  def systemFancyEmail = AuthUtil.fancyEmail(systemUsername.vend, systemEmail.vend)
+
+  // LoginToken
+  val loginTokenUrl = new FactoryMaker[String]("/login-token") {}
+  val loginTokenAfterUrl = new FactoryMaker[String]("/set-password") {}
+  val loginTokenExpires = new FactoryMaker[ReadablePeriod](Hours.hours(48)) {}
+
+  // ExtSession
+  val extSessionExpires = new FactoryMaker[ReadablePeriod](Days.days(90)) {}
+  val extSessionCookieName = new FactoryMaker[String]("EXTSESSID") {}
+  val extSessionCookiePath = new FactoryMaker[String]("/") {}
+
+  // Permission
+  val permissionWilcardToken = new FactoryMaker[String]("*") {}
+  val permissionPartDivider = new FactoryMaker[String](":") {}
+  val permissionSubpartDivider = new FactoryMaker[String](",") {}
+  //val permissionCaseSensitive = new FactoryMaker[Boolean](true) {}
+
+  def init(
+    authUserMeta: ProtoAuthUserMeta[_] = model.SimpleUser,
+    indexUrl: String = "/",
+    loginUrl: String = "/login",
+    logoutUrl: String = "/logout",
+    siteName: String = "Example",
+    systemEmail: String = "info@example.com",
+    systemUsername: String= "Example Staff",
+    loginTokenUrl: String = "/login-token",
+    loginTokenAfterUrl: String = "/set-password",
+    loginTokenExpires: ReadablePeriod = Hours.hours(48),
+    extSessionExpires: ReadablePeriod = Days.days(90),
+    extSessionCookieName: String = "EXTSESSID",
+    extSessionCookiePath: String = "/",
+    permissionWilcardToken: String = "*",
+    permissionPartDivider: String = ":",
+    permissionSubpartDivider: String = ","
+  ): Unit = {
+
+    LiftRules.addToPackages("net.liftmodules.mapperauth")
+
+    this.authUserMeta.default.set(authUserMeta)
+    this.indexUrl.default.set(indexUrl)
+    this.loginUrl.default.set(loginUrl)
+    this.logoutUrl.default.set(logoutUrl)
+    this.siteName.default.set(siteName)
+    this.systemEmail.default.set(systemEmail)
+    this.systemUsername.default.set(systemUsername)
+    this.loginTokenUrl.default.set(loginTokenUrl)
+    this.loginTokenAfterUrl.default.set(loginTokenAfterUrl)
+    this.loginTokenExpires.default.set(loginTokenExpires)
+    this.extSessionExpires.default.set(extSessionExpires)
+    this.extSessionCookieName.default.set(extSessionCookieName)
+    this.extSessionCookiePath.default.set(extSessionCookiePath)
+    this.permissionWilcardToken.default.set(permissionWilcardToken)
+    this.permissionPartDivider.default.set(permissionPartDivider)
+    this.permissionSubpartDivider.default.set(permissionSubpartDivider)
+  }
+}
+
+object AuthUtil {
+  def tryo[T](f: => T): Box[T] = {
+    try {
+      f match {
+        case null => Empty
+        case x => Full(x)
+      }
+    } catch {
+      case (e: Throwable) => Failure(e.getMessage, Full(e), Empty)
+    }
+  }
+
+  def fancyEmail(name: String, email: String): String = "%s <%s>".format(name, email)
+}
+
+/*
+ * User gets sent here after a successful login.
+ */
+object LoginRedirect extends SessionVar[Box[String]](Empty) {
+  override def __nameSalt = Helpers.nextFuncName
+}
