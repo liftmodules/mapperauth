@@ -16,8 +16,8 @@ import net.liftweb.mapper.MappedString
  */
 object Permission extends Permission with LongKeyedMetaMapper[Permission]  {
 
-  def addUserPermission(uid: Long, aPerm: APermission) = {
-    create.userId(uid).permission(aPerm.toString).saveMe
+  def createUserPermission(uid: Long, aPerm: APermission) = {
+    create.userId(uid).permission(aPerm.toString)
   }
 
   def removeAllUserPermissions(uid: Long) = {

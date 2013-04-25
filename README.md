@@ -75,23 +75,23 @@ for detailed information.
 
 See [PermissionSpec](https://github.com/liftmodules/mapperauth/blob/master/src/test/scala/net.liftmodules/mapperauth/PermissionSpec.scala) for examples.
 
-TODO: PermissionListField provides a way to store permissions for a user. It stores them as a list of strings.
-Right now only Roles can be created, no single permissions per user. Needs fixing.
+You can either attach permissions directly to a user or create roles with permissions attached and then add these roles to the user.
 
 Example:
 
-    TODO: user.permissions(List(Permission("printer", "print"), Permission("user", "edit", "123")))
+    Permission.createUserPermission(user, APermission("printer", "print")).save
+    Permission.createUserPermission(user, APermission("user", "edit", "123")).save
 
     assert(User.hasPermission(APermission("printer", "manage")) == false)
 
-Role is a MongoRecord that provides a way to group a set of permissions. A user's full set of permissions is calculated using the permissions
+Role is a Mapper instance that provides a way to group a set of permissions. A user's full set of permissions is calculated using the permissions
 from any roles assigned to them and the individual permissions assigned to them. There are also LocParams as well as the User-Meta-Singleton that can be used to check for roles.
 
 Example:
 
-    TODO: val superuser = Role.createRecord.id("superuser").permissions(List(Permission.all)).save
+    val superuser = Role.findOrCreateAndSave("superuser", "a category", Permission.fromAPermission(APermission.all))
 
-    user.roles(List("superuser"))
+    user.userRoles.addRole("superuser").saveMe
 
     assert(User.hasRole("superuser")) == true)
     assert(User.lacksRole("superuser")) == false)
