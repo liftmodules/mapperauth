@@ -22,6 +22,7 @@ import net.liftweb.mapper.OneToMany
 import net.liftmodules.mapperauth.model.Role
 import net.liftmodules.mapperauth.model.share.MappedRole
 import net.liftmodules.mapperauth.model.Permission
+import scala.xml.UnprefixedAttribute
 
 /**
  * AuthUser is a base class that gives you a "User" that has roles and permissions.
@@ -184,6 +185,9 @@ trait ProtoAuthUser[T <: ProtoAuthUser[T]] extends MapperAuthUser[T] {
       valMinLen(3, "Username must be at least 3 characters") _ ::
       valMaxLen(32, "Username must be less than 33 characters") _ ::
       super.validations
+
+    // Bootstrap 3
+    override def toFormAppendedAttributes = new UnprefixedAttribute("class", "form-control", super.toFormAppendedAttributes)
   }
 
   /*
@@ -203,13 +207,24 @@ trait ProtoAuthUser[T <: ProtoAuthUser[T]] extends MapperAuthUser[T] {
       valUnique("That email address is already registered with us") _  ::
       valMaxLen(254, "Email must be 254 characters or less") _ ::
       super.validations
+
+    // Bootstrap 3
+    override def toFormAppendedAttributes = new UnprefixedAttribute("class", "form-control", super.toFormAppendedAttributes)
+
   }
+
   // email address has been verified by clicking on a LoginToken link
   object verified extends MappedBoolean(this) {
     override def displayName = "Verified"
+
+    // Bootstrap 3
+    override def toFormAppendedAttributes = new UnprefixedAttribute("class", "form-control", super.toFormAppendedAttributes)
   }
   object password extends MappedPassword(this) {
     override def displayName = "Password"
+
+    // Bootstrap 3
+    override def toFormAppendedAttributes = new UnprefixedAttribute("class", "form-control", super.toFormAppendedAttributes)
   }
 
   object userRoles extends MappedRole(this)
