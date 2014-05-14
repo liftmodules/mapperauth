@@ -73,7 +73,7 @@ package share {
       S.fmapFunc({s: List[String] => this.setFromAny(s)}){funcName =>
       Full(appendFieldId(<input type={formInputType} data-mask={ fieldInputMask }
                          name={funcName}
-                         value={is match {
+                         value={get match {
                            case Full(s) if s != null => format(s)
                            case _ => ""
                          }}/>))

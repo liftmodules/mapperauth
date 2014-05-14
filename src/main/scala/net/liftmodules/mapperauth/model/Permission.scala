@@ -24,7 +24,7 @@ object Permission extends Permission with LongKeyedMetaMapper[Permission]  {
     Permission.findAll(By(userId, uid)).map(_.delete_!)
   }
 
-  def toAPermission(perm: Permission) = APermission.fromString(perm.permission.is)
+  def toAPermission(perm: Permission) = APermission.fromString(perm.permission.get)
   def fromAPermission(aPerm: APermission): Permission = Permission.create.permission(aPerm.toString)
 
   def userPermissions(uid: Long): List[APermission] = Permission.findAll(By(userId, uid)).map(toAPermission)

@@ -66,14 +66,14 @@ class Role extends KeyedMapper[String, Role] with OneToMany[String,Role] {
   }
 
   override def equals(other: Any): Boolean = other match {
-    case r: Role => r.id.is == this.id.is
+    case r: Role => r.id.get == this.id.get
     case _ => false
   }
 
-  def displayName() = S ? ("userClientConnection.role."+id.is)
+  def displayName() = S ? ("userClientConnection.role."+id.get)
 
   override def asHtml = {
-    val cls = "label" + (id.is match {
+    val cls = "label" + (id.get match {
       case Role.R_TEAM_OWNER => " label-important"
       case Role.R_TEAM_MEMBER => " label-info"
       case _ => ""

@@ -41,14 +41,14 @@ abstract class MappedNullableDate[T<:Mapper[T]](val fieldOwner: T) extends Mappe
   def dbFieldClass = classOf[Box[Date]]
 
 
-  def toLong: Long = is match {
+  def toLong: Long = get match {
     case Full(d: Date) if d != null => d.getTime / 1000L
     case _ => 0L
   }
 
   def asJsExp: JsExp = JE.Num(toLong)
 
-  def asJsonValue: Box[JsonAST.JValue] = Full(is match {
+  def asJsonValue: Box[JsonAST.JValue] = Full(get match {
     case Full(v: Date) if v != null => JsonAST.JInt(v.getTime)
     case _ => JsonAST.JNull
   })
@@ -78,7 +78,7 @@ abstract class MappedNullableDate[T<:Mapper[T]](val fieldOwner: T) extends Mappe
   S.fmapFunc({s: List[String] => this.setFromAny(s)}){funcName =>
   Full(appendFieldId(<input type={formInputType}
                      name={funcName}
-                     value={is match {
+                     value={get match {
                          case Full(s) if s != null => format(s)
                          case _ => "" }} />))
   }
@@ -88,13 +88,13 @@ abstract class MappedNullableDate[T<:Mapper[T]](val fieldOwner: T) extends Mappe
     case JsonAST.JInt(v) => this.set(Full(new Date(v.longValue)))
     case n: Number => this.set(Full(new Date(n.longValue)))
     case "" | null => this.set(Empty)
-    case s: String => parse(s).map(d => this.set(Full(d))).openOr(this.is)
-    case (s: String) :: _ => parse(s).map(d => this.set(Full(d))).openOr(this.is)
+    case s: String => parse(s).map(d => this.set(Full(d))).openOr(this.get)
+    case (s: String) :: _ => parse(s).map(d => this.set(Full(d))).openOr(this.get)
     case d: Date => this.set(Full(d))
     case Some(d: Date) => this.set(Full(d))
     case Full(d: Date) => this.set(Full(d))
     case None | Empty | Failure(_, _, _) => this.set(Empty)
-    case _ => this.is
+    case _ => this.get
   }
 
   def jdbcFriendly(field : String) = real_convertToJDBCFriendly(i_is_!)

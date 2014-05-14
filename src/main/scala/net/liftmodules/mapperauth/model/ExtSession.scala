@@ -55,7 +55,7 @@ object ExtSession extends ExtSession with KeyedMetaMapper[String, ExtSession] wi
   def createExtSession(uid: Long) {
     deleteExtCookie() // make sure existing cookie is removed
     val inst = create.id(UUID.randomUUID().toString()).userId(uid).saveMe
-    val cookie = HTTPCookie(cookieName, inst.id.is)
+    val cookie = HTTPCookie(cookieName, inst.id.get)
       .setMaxAge(whenExpires.toPeriod.toStandardSeconds.getSeconds).setPath(cookiePath)
     S.addCookie(cookie)
   }

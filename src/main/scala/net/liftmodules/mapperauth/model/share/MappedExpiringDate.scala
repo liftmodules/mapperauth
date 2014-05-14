@@ -18,5 +18,5 @@ class MappedExpiringDate[OwnerType<:Mapper[OwnerType]](val fo: OwnerType) extend
 
   def apply(in: ReadablePeriod): OwnerType = apply(periodToExpiresDate(in))
 
-  def isExpired: Boolean = (new DateTime).getMillis >= (new DateTime(this.is)).getMillis
+  def isExpired: Boolean = (new DateTime).getMillis >= (new DateTime(this.get)).getMillis
 }

@@ -12,7 +12,7 @@ import net.liftmodules.mapperauth.APermission
 abstract class MappedRole[T<:Mapper[T]](_fieldOwner: T) extends MappedString[T](_fieldOwner, 1024) {
 
   def buildDisplayList: List[(String, String)] = {
-    Role.allRoles(Role.CAT_TEAM) map (r => (r.id.is, r.displayName))
+    Role.allRoles(Role.CAT_TEAM) map (r => (r.id.get, r.displayName))
   }
 
   def choosenElement = names match {
@@ -26,9 +26,9 @@ abstract class MappedRole[T<:Mapper[T]](_fieldOwner: T) extends MappedString[T](
   override def asHtml = firstRole.map(_.asHtml).openOr(Text(""))
 
   def permissions: List[APermission] = names.flatMap(n => Role.find(n).map(_.permissions.allPerms).openOr(Nil))
-  def names: List[String] = is.split(",").toList
+  def names: List[String] = get.split(",").toList
   def addRole(role: String*) = {
-    val current = if (is == null) "" else is
+    val current = if (get == null) "" else get
     val add = (if (current.length() > 0) "," else "") + role.mkString(",")
     set(current+add)
     fieldOwner
@@ -40,7 +40,7 @@ abstract class MappedRole[T<:Mapper[T]](_fieldOwner: T) extends MappedString[T](
     fieldOwner
   }
 
-  def setRole(role: Role): T = setRole(role.id.is)
+  def setRole(role: Role): T = setRole(role.id.get)
 
   def removeAll = { set(""); this }
 

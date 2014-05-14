@@ -153,7 +153,7 @@ trait UserLifeCycle[UserType <: AuthUser] {
 trait MapperAuthUser[T <: MapperAuthUser[T]] extends LongKeyedMapper[T] with IdPK with UserIdAsString with AuthUser with CreatedUpdated {
   self: T =>
 
-  def userIdAsString: String = id.is.toString
+  def userIdAsString: String = id.get.toString
 
   def id: MappedField[_, _]
   def email: MappedEmail[_]
@@ -173,7 +173,7 @@ trait ProtoAuthUser[T <: ProtoAuthUser[T]] extends MapperAuthUser[T] {
 
     override def valUnique(msg: => String)(value: String): List[FieldError] = {
       if (value.length > 0)
-        getSingleton.findAll(By(this, value)).filterNot(_.id.is == fieldOwner.id.is).map(u =>
+        getSingleton.findAll(By(this, value)).filterNot(_.id.get == fieldOwner.id.get).map(u =>
           FieldError(this, Text(msg))
         )
       else
@@ -198,7 +198,7 @@ trait ProtoAuthUser[T <: ProtoAuthUser[T]] extends MapperAuthUser[T] {
     override def setFilter = trim _ :: toLower _ :: super.setFilter
 
     override def valUnique(msg: => String)(value: String): List[FieldError] = {
-      fieldOwner.getSingleton.findAll(By(this, value)).filter(_.id.is != fieldOwner.id.is).map(u =>
+      fieldOwner.getSingleton.findAll(By(this, value)).filter(_.id.get != fieldOwner.id.get).map(u =>
         FieldError(this, Text(msg))
       )
     }
@@ -241,10 +241,10 @@ trait ProtoAuthUser[T <: ProtoAuthUser[T]] extends MapperAuthUser[T] {
   /**
    * Using a lazy val means the user has to be reloaded if the attached roles or permissions change.
    */
-  lazy val authPermissions: Set[APermission] = (Permission.userPermissions(id.is) ::: userRoles.permissions).toSet
+  lazy val authPermissions: Set[APermission] = (Permission.userPermissions(id.get) ::: userRoles.permissions).toSet
   lazy val authRoles: Set[String] = userRoles.names.toSet
 
-  lazy val fancyEmail = AuthUtil.fancyEmail(username.is, email.is)
+  lazy val fancyEmail = AuthUtil.fancyEmail(username.get, email.get)
 }
 
 trait ProtoAuthUserMeta[UserType <: MapperAuthUser[UserType]]

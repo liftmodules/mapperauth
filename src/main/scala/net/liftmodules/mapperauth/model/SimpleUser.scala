@@ -37,7 +37,7 @@ object SimpleUser extends SimpleUser with ProtoAuthUserMeta[SimpleUser] with Log
 
   val DEFAULT_ID = -1l
 
-  def currentUserIdOrDefault = SimpleUser.currentUser.map(_.id.is).openOr(DEFAULT_ID)
+  def currentUserIdOrDefault = SimpleUser.currentUser.map(_.id.get).openOr(DEFAULT_ID)
 
   override def dbTableName = "users"
 
@@ -79,7 +79,7 @@ object SimpleUser extends SimpleUser with ProtoAuthUserMeta[SimpleUser] with Log
         at.delete_!
         RedirectWithState(indexUrl, RedirectState(() => { S.error("Login token has expired") }))
       }
-      case Full(at) => find(at.userId.is).map(user => {
+      case Full(at) => find(at.userId.get).map(user => {
         if (user.validate.length == 0) {
           user.verified(true)
           user.save
@@ -103,7 +103,7 @@ object SimpleUser extends SimpleUser with ProtoAuthUserMeta[SimpleUser] with Log
   def sendLoginToken(user: SimpleUser): Unit = {
     import net.liftweb.util.Mailer._
 
-    val token = LoginToken.createForUserId(user.id.is)
+    val token = LoginToken.createForUserId(user.id.get)
 
     val msgTxt =
       """
@@ -139,7 +139,7 @@ object SimpleUser extends SimpleUser with ProtoAuthUserMeta[SimpleUser] with Log
     ignoredReq => {
       if (currentUserId.isEmpty) {
         ExtSession.handleExtSession match {
-          case Full(es) => find(es.userId.is).foreach { user => logUserIn(user, false) }
+          case Full(es) => find(es.userId.get).foreach { user => logUserIn(user, false) }
           case Failure(msg, _, _) => logger.warn("Error logging user in with ExtSession: %s".format(msg))
           case Empty =>
         }
