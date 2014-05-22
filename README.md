@@ -12,11 +12,11 @@ SBT 0.12
 
 For *Lift 2.5.x* (Scala 2.9 and 2.10):
 
-    libraryDependencies += "net.liftmodules" %% "mongoauth_2.5" % "0.3-SNAPSHOT"
+    libraryDependencies += "net.liftmodules" %% "mapperauth_2.5" % "0.3-SNAPSHOT"
 
 For *Lift 3.0 M0* (Scala 2.10):
 
-    libraryDependencies += "net.liftmodules" %% "mongoauth_3.0" % "0.4-SNAPSHOT"
+    libraryDependencies += "net.liftmodules" %% "mapperauth_3.0" % "0.4-SNAPSHOT"
 
 
 # Configuration
