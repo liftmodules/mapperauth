@@ -12,7 +12,11 @@ SBT 0.12
 
 For *Lift 2.5.x* (Scala 2.9 and 2.10):
 
-    libraryDependencies += "net.liftmodules" %% "mongoauth_2.5" % "0.1-SNAPSHOT"
+    libraryDependencies += "net.liftmodules" %% "mongoauth_2.5" % "0.3-SNAPSHOT"
+
+For *Lift 3.0 M0* (Scala 2.10):
+
+    libraryDependencies += "net.liftmodules" %% "mongoauth_3.0" % "0.4-SNAPSHOT"
 
 
 # Configuration
@@ -131,4 +135,3 @@ _MapperAuth_ as well as _lift-bootstrap_ are ported from Tim Nelson's [lift-mong
 # License
 
 Apache v2.0. See LICENSE.txt
-
