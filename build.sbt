@@ -2,17 +2,17 @@ name := "mapperauth"
 
 organization := "net.liftmodules"
 
-version := "0.3-SNAPSHOT"
+version := "0.4-SNAPSHOT"
 
-liftVersion <<= liftVersion ?? "2.6-SNAPSHOT"
+// liftVersion <<= liftVersion ?? "2.6-SNAPSHOT"
 
-// liftVersion <<= liftVersion ?? "3.0-SNAPSHOT"
+liftVersion <<= liftVersion ?? "3.0-M0"
 
 liftEdition <<= liftVersion apply { _.substring(0,3) }
 
 name <<= (name, liftEdition) { (n, e) =>  n + "_" + e }
 
-scalaVersion := "2.10.3"
+scalaVersion := "2.10.0"
 
 // crossScalaVersions := Seq("2.9.2", "2.9.1-1", "2.9.1", "2.10.3")
 
@@ -85,4 +85,3 @@ credentials += Credentials( file("/private/liftmodules/cloudbees.credentials") )
 unmanagedSourceDirectories in Compile <<= (scalaSource in Compile)(Seq(_))
 
 unmanagedSourceDirectories in Test <<= (scalaSource in Test)(Seq(_))
-
