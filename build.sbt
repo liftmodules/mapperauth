@@ -6,7 +6,7 @@ version := "0.4-SNAPSHOT"
 
 // liftVersion <<= liftVersion ?? "2.6-SNAPSHOT"
 
-liftVersion <<= liftVersion ?? "3.0-M0"
+liftVersion <<= liftVersion ?? "3.0-M1"
 
 liftEdition <<= liftVersion apply { _.substring(0,3) }
 
