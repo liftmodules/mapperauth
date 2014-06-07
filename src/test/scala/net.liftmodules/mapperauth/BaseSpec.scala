@@ -15,7 +15,8 @@ trait MapperBaseSpec extends BaseSpec with MapperTestKit
 trait WithSessionSpec extends BaseSpec {
   def session = new LiftSession("", randomString(20), Empty)
 
-  override def withFixture(test: NoArgTest) {
+  override protected def withFixture(test: NoArgTest) = {
     S.initIfUninitted(session) { test() }
   }
+  
 }

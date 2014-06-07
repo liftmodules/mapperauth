@@ -14,7 +14,9 @@ name <<= (name, liftEdition) { (n, e) =>  n + "_" + e }
 
 scalaVersion := "2.10.0"
 
-crossScalaVersions := Seq("2.11.0", "2.10.0", "2.9.2", "2.9.1-1", "2.9.1")
+// crossScalaVersions := Seq("2.11.0", "2.10.0", "2.9.2", "2.9.1-1", "2.9.1")
+
+crossScalaVersions := Seq("2.11.0", "2.10.0")
 
 // crossScalaVersions := Seq("2.10.0")
 
@@ -34,7 +36,7 @@ libraryDependencies <++= liftVersion { liftVersion =>
 
 libraryDependencies <++= scalaVersion { scalaVersion =>
   (scalaVersion match {
-    case "2.11.0" | "2.11.1" =>  "org.scalatest" %% "scalatest" % "2.2.0" % "test"
+    case "2.10.0" | "2.11.0" | "2.11.1" =>  "org.scalatest" %% "scalatest" % "2.1.3" % "test"
     case _ => "org.scalatest" %% "scalatest" % "2.0.M5b" % "test"
   })  ::
   Nil
