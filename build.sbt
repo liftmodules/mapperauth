@@ -4,9 +4,9 @@ organization := "net.liftmodules"
 
 version := "0.4-SNAPSHOT"
 
-// liftVersion <<= liftVersion ?? "2.6-SNAPSHOT"
+liftVersion <<= liftVersion ?? "2.6-SNAPSHOT"
 
-liftVersion <<= liftVersion ?? "3.0-M1"
+//liftVersion <<= liftVersion ?? "3.0-M1"
 
 liftEdition <<= liftVersion apply { _.substring(0,3) }
 
@@ -14,9 +14,9 @@ name <<= (name, liftEdition) { (n, e) =>  n + "_" + e }
 
 scalaVersion := "2.10.0"
 
-// crossScalaVersions := Seq("2.9.2", "2.9.1-1", "2.9.1", "2.10.0")
+crossScalaVersions := Seq("2.11.0", "2.10.0", "2.9.2", "2.9.1-1", "2.9.1")
 
-crossScalaVersions := Seq("2.10.0")
+// crossScalaVersions := Seq("2.10.0")
 
 resolvers ++= Seq(
   "CB Central Mirror"            at "http://repo.cloudbees.com/content/groups/public",
@@ -24,13 +24,20 @@ resolvers ++= Seq(
   "Sonatype Snapshot"            at "https://oss.sonatype.org/content/repositories/snapshots"
 )
 
-libraryDependencies <++= (liftVersion) { liftVersion =>
+libraryDependencies <++= liftVersion { liftVersion =>
   Seq(
     "net.liftweb"             %% "lift-mapper"         % liftVersion % "provided",
     "net.liftweb"             %% "lift-webkit"         % liftVersion % "provided",
-    "ch.qos.logback"          %  "logback-classic"     % "1.0.6"     % "provided",
-    "org.scalatest"           %% "scalatest"           % "2.0.M5b"   % "test"
+    "ch.qos.logback"          %  "logback-classic"     % "1.0.6"     % "provided"
   )
+}
+
+libraryDependencies <++= scalaVersion { scalaVersion =>
+  (scalaVersion match {
+    case "2.11.0" | "2.11.1" =>  "org.scalatest" %% "scalatest" % "2.2.0" % "test"
+    case _ => "org.scalatest" %% "scalatest" % "2.0.M5b" % "test"
+  })  ::
+  Nil
 }
 
 scalacOptions <<= scalaVersion map { sv: String =>
