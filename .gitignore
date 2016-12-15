@@ -3,3 +3,5 @@
 /.cache
 /.classpath
 /.project
+/.idea/
+/mapperauth_3.0.iml

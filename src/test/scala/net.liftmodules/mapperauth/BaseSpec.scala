@@ -1,15 +1,13 @@
 package net.liftmodules.mapperauth
 
-import org.scalatest.WordSpec
-import org.scalatest.matchers.ShouldMatchers
-
+import org.scalatest.{Matchers, WordSpec}
 import net.liftweb._
 import common._
 import http._
 import util._
 import Helpers._
 
-trait BaseSpec extends WordSpec with ShouldMatchers
+trait BaseSpec extends WordSpec with Matchers
 trait MapperBaseSpec extends BaseSpec with MapperTestKit
 
 trait WithSessionSpec extends BaseSpec {

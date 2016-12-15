@@ -1,24 +1,27 @@
+import LiftModule.{liftVersion, liftEdition}
+
 name := "mapperauth"
 
 organization := "net.liftmodules"
 
-version := "0.4-SNAPSHOT"
+version := "0.5-SNAPSHOT"
 
-liftVersion <<= liftVersion ?? "2.6-SNAPSHOT"
+// liftVersion <<= liftVersion ?? "2.6-SNAPSHOT"
 
-//liftVersion <<= liftVersion ?? "3.0-M1"
+liftVersion := "3.0.1"
 
-liftEdition <<= liftVersion apply { _.substring(0,3) }
+liftEdition := liftVersion.value.substring(0,3)
 
-name <<= (name, liftEdition) { (n, e) =>  n + "_" + e }
+// name <<= (name, liftEdition) { (n, e) =>  n + "_" + e }
 
-scalaVersion := "2.10.0"
+// Necessary beginning with sbt 0.13, otherwise Lift editions get messed up.
+// E.g. "2.5" gets converted to "2-5"
+// moduleName := name.value
+moduleName := name.value + "_" + liftEdition.value
 
-// crossScalaVersions := Seq("2.11.0", "2.10.0", "2.9.2", "2.9.1-1", "2.9.1")
+scalaVersion := "2.12.1"
 
-crossScalaVersions := Seq("2.11.0", "2.10.0")
-
-// crossScalaVersions := Seq("2.10.0")
+crossScalaVersions := Seq("2.12.1", "2.11.8")
 
 resolvers ++= Seq(
   "CB Central Mirror"            at "http://repo.cloudbees.com/content/groups/public",
@@ -26,21 +29,12 @@ resolvers ++= Seq(
   "Sonatype Snapshot"            at "https://oss.sonatype.org/content/repositories/snapshots"
 )
 
-libraryDependencies <++= liftVersion { liftVersion =>
-  Seq(
-    "net.liftweb"             %% "lift-mapper"         % liftVersion % "provided",
-    "net.liftweb"             %% "lift-webkit"         % liftVersion % "provided",
-    "ch.qos.logback"          %  "logback-classic"     % "1.0.6"     % "provided"
-  )
-}
-
-libraryDependencies <++= scalaVersion { scalaVersion =>
-  (scalaVersion match {
-    case "2.10.0" | "2.11.0" | "2.11.1" =>  "org.scalatest" %% "scalatest" % "2.1.3" % "test"
-    case _ => "org.scalatest" %% "scalatest" % "2.0.M5b" % "test"
-  })  ::
+libraryDependencies ++=
+  "net.liftweb"             %% "lift-mapper"         % liftVersion.value % "provided" ::
+  "net.liftweb"             %% "lift-webkit"         % liftVersion.value % "provided" ::
+  "ch.qos.logback"          %  "logback-classic"     % "1.0.6"     % "provided" ::
+  "org.scalatest"           %% "scalatest"           % "3.0.1"     % "test" ::
   Nil
-}
 
 scalacOptions <<= scalaVersion map { sv: String =>
   if (sv.startsWith("2.10."))
