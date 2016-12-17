@@ -52,7 +52,7 @@ publishTo <<= version { _.endsWith("SNAPSHOT") match {
 
 credentials += Credentials( file("sonatype.credentials") )
 
-credentials += Credentials( file("/private/liftmodules/sonatype.credentials") )
+credentials += Credentials( file(System.getenv().get("HOME") + "/Keys/sonatype.credentials") )
 
 publishMavenStyle := true
 
@@ -81,8 +81,6 @@ pomExtra := (
 	 	</developer>
 	 </developers>
  )
-
-credentials += Credentials( file("/private/liftmodules/cloudbees.credentials") )
 
 // Remove Java directories, otherwise sbteclipse generates them
 unmanagedSourceDirectories in Compile <<= (scalaSource in Compile)(Seq(_))
