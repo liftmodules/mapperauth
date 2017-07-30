@@ -6,22 +6,15 @@ organization := "net.liftmodules"
 
 version := "0.5-SNAPSHOT"
 
-// liftVersion <<= liftVersion ?? "2.6-SNAPSHOT"
-
 liftVersion := "3.0.1"
 
 liftEdition := liftVersion.value.substring(0,3)
 
-// name <<= (name, liftEdition) { (n, e) =>  n + "_" + e }
-
-// Necessary beginning with sbt 0.13, otherwise Lift editions get messed up.
-// E.g. "2.5" gets converted to "2-5"
-// moduleName := name.value
 moduleName := name.value + "_" + liftEdition.value
 
-scalaVersion := "2.12.1"
+scalaVersion := "2.12.3"
 
-crossScalaVersions := Seq("2.12.1", "2.11.8")
+crossScalaVersions := Seq("2.12.3", "2.11.11")
 
 resolvers ++= Seq(
   "CB Central Mirror"            at "http://repo.cloudbees.com/content/groups/public",
@@ -36,12 +29,7 @@ libraryDependencies ++=
   "org.scalatest"           %% "scalatest"           % "3.0.1"     % "test" ::
   Nil
 
-scalacOptions <<= scalaVersion map { sv: String =>
-  if (sv.startsWith("2.10."))
-    Seq("-deprecation", "-unchecked", "-feature", "-language:postfixOps")
-  else
-    Seq("-deprecation", "-unchecked")
-}
+scalacOptions := Seq("-deprecation", "-unchecked")
 
 // Sonatype publishing set up below this point
 
