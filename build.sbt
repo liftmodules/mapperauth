@@ -4,9 +4,9 @@ name := "mapperauth"
 
 organization := "net.liftmodules"
 
-version := "0.5-SNAPSHOT"
+version := "0.6-SNAPSHOT"
 
-liftVersion := "3.0.1"
+liftVersion := "3.1.0"
 
 liftEdition := liftVersion.value.substring(0,3)
 
