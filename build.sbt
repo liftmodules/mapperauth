@@ -33,7 +33,7 @@ scalacOptions := Seq("-deprecation", "-unchecked")
 
 // Sonatype publishing set up below this point
 
-publishTo <<= version { _.endsWith("SNAPSHOT") match {
+publishTo := { version.value.endsWith("SNAPSHOT") match {
  	case true  => Some("snapshots" at "https://oss.sonatype.org/content/repositories/snapshots")
  	case false => Some("releases" at "https://oss.sonatype.org/service/local/staging/deploy/maven2")
 }}
@@ -71,6 +71,6 @@ pomExtra := (
  )
 
 // Remove Java directories, otherwise sbteclipse generates them
-unmanagedSourceDirectories in Compile <<= (scalaSource in Compile)(Seq(_))
+unmanagedSourceDirectories in Compile := Seq((scalaSource in Compile).value)
 
-unmanagedSourceDirectories in Test <<= (scalaSource in Test)(Seq(_))
+unmanagedSourceDirectories in Test := Seq((scalaSource in Test).value)
