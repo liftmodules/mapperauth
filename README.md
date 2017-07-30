@@ -20,9 +20,13 @@ For *Lift 3.0 M0* (Scala 2.10):
 
 SBT 0.13
 
-For *Lift 3.0.1 (Scala 2.11 and Scala 2.12):
+For *Lift 3.0.1 (Scala 2.11 and Scala 2.12):*
 
     libraryDependencies += "net.liftmodules" %% "mapperauth_3.0" % "0.5-SNAPSHOT"
+
+For *Lift 3.1.0*:
+
+    libraryDpendencies += "net.liftmodules" %% "mapperauth_3.1" % "0.6-SNAPSHOT"
 
 # Configuration
 
