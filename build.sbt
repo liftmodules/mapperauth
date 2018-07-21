@@ -12,9 +12,9 @@ liftEdition := liftVersion.value.substring(0,3)
 
 moduleName := name.value + "_" + liftEdition.value
 
-scalaVersion := "2.12.3"
+scalaVersion := "2.12.6"
 
-crossScalaVersions := Seq("2.12.3", "2.11.11")
+crossScalaVersions := Seq("2.12.6", "2.11.11")
 
 resolvers ++= Seq(
   "CB Central Mirror"            at "http://repo.cloudbees.com/content/groups/public",
